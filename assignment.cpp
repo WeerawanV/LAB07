@@ -47,6 +47,13 @@ void draw_star(int x, int y) {
 	printf("*");
 }
 
+void set_star(int x,int y){
+	srand(time(NULL));
+	x = 10 + rand() % 61;
+	y = 2 + rand() % 4;
+	draw_star(x, y);
+}
+
 void erase_ship(int x, int y) {
 	gotoxy(x, y);
 	printf("       ");
@@ -57,26 +64,24 @@ void erase_bullet(int x, int y) {
 	printf(" ");
 }
 
-void erase_star(int x, int y) {
-	gotoxy(x, y);
-	printf(" ");
-}
-
 int main() {
 	int x = 38, y = 20;
+	int s, sx, sy;
 	char ch = ' ';
-	int direction = 0;
 	int bx[5], by[5], i;
 	int bulletStatus[5] = { 0,0,0,0,0 };
+	int direction = 0;
 	int status = 0; // 1 = on , 0 = off
-	int s ,sx ,sy;
-	setcursor(0);
+	int score = 0;
+	gotoxy(85, 0);
+	printf("Score : %d" ,score);
 	srand(time(NULL));
 	for (s = 0; s <= 20; s++) {
 		sx = 10 + rand() % 61;
 		sy = 2 + rand() % 4;
 		draw_star(sx, sy);
 	}
+	setcursor(0);
 	draw_ship(x, y);
 	do {
 		if (_kbhit()) {
@@ -110,18 +115,27 @@ int main() {
 			draw_ship(++x, y);
 			Sleep(250);
 		}
-		for (i = 0; i < 5; i++) { //aim for 5 bullets
+		for (i = 0; i < 5; i++) { 
 			if (bulletStatus[i] == 1) {
 				erase_bullet(bx[i], by[i]);
 				if (by[i] < 3) {
-					bulletStatus[i] = 0; //check bullet still in screen or not
+					bulletStatus[i] = 0; 
 				}
 				else {
-					if (cursor(bx[i], --by[i]) == '*') {
+					if (cursor(bx[i], by[i]-1) == '*') {
+						gotoxy(bx[i], by[i]-1);
+						printf(" ");
 						erase_bullet(bx[i], by[i]);
+						bulletStatus[i] = 0;
+						score++;
+						gotoxy(85, 0);
+						printf("Score : %d", score);
+						Beep(700, 100);
+						set_star(x, y);
 					}
 					else {
 						draw_bullet(bx[i], --by[i]);
+						Beep(300, 100);
 					}
 				} 
 			}

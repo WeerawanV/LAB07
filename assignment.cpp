@@ -3,6 +3,7 @@
 #include<Windows.h>
 #include<conio.h>
 #include<time.h>
+#include<thread>
 
 void gotoxy(int x, int y) {
 	COORD c = { x,y };
@@ -130,12 +131,14 @@ int main() {
 						score++;
 						gotoxy(85, 0);
 						printf("Score : %d", score);
-						Beep(700, 100);
+						std::thread q(Beep,700, 100);
+						q.detach();
 						set_star(x, y);
 					}
 					else {
 						draw_bullet(bx[i], --by[i]);
-						Beep(300, 100);
+						std::thread q(Beep,300, 100);
+						q.detach();
 					}
 				} 
 			}
